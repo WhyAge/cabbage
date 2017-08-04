@@ -1,0 +1,11 @@
+{
+  "name": "cabbage",
+  "version": "1.0.0",
+  "description": "Yet unknown",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node main.js"
+  },
+  "author": "Jay Harel",
+  "license": "ISC"
+}

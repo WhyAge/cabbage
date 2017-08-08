@@ -1,15 +1,35 @@
 const express = require("express")
 const app = express()
 
-//app.get("/", function(req, res) {
-//	res.send("Hello world, it's cold in here")
-//})
+app.get("/api/airdrop_status", airdrop_status)
 
-app.get("/", homepage)
+app.post("/api/manual_drop", manual_drop)
+
+app.put("/api/auto_drop", auto_drop)
+
+app.use(express.static('homepage'))
 
 app.listen(80, function(){
 	console.log("Running app on port 80")
 })
+
+function airdrop_status(req, res) {
+	console.log("airdrop_status")
+	res.send("airdrop_status")
+}
+
+function manual_drop(req, res) {
+	console.log("manual_drop")
+	res.send("manual_drop")
+}
+
+function auto_drop(req, res) {
+	console.log("auto_drop")
+	res.send("auto_drop")
+}
+
+/*
+app.get("/", homepage)
 
 function homepage(req, res) {
 	var request = require('request');
@@ -25,7 +45,20 @@ function homepage(req, res) {
 		response += "x:" + parsedBody.plane_location.x + "<br>"
 		response += "y:" + parsedBody.plane_location.y + "<br>"
 		response += "</div>"
+		response += "<form action=\"\" method=\"post\"> <button name=\"drop\" value=\"drop\">Drop</button> </form>"
 		res.send(response);
 	});
+*/
+/*
+function postit(argument) {
+	request.post({url:'http://latte.sitarbucks.com/plane/release_bottle', formData: formData}, function optionalCallback(err, httpResponse, body) {
+  		if (err) {
+    		return console.error('upload failed:', err);
+  		}
 
+
+  		console.log('Upload successful!  Server responded with:', body);
+});
 }
+}
+*/

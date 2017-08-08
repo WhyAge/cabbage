@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Cabbage1</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+    	var autoDropMode = false;
+
+	    $("#manual_drop").click(function() {
+        	console.log("post: manual drop")
+			$.post('/api/manual_drop', function(response) {
+		    }, 'json');
+		});
+
+/*
+		$.ajax({
+    		url: '/api/auto_drop',
+    		type: 'PUT',
+    		success: function(result) {
+	        	console.log("put: auto drop")
+        	}
+		});
+*/
+		$('#auto_drop').change(function() {
+			if($(this).val() == "Off") autoDropMode = false; else autoDropMode = true; ????? always Off
+			console.log(autoDropMode)
+		});
+
+    });     
+</script>
+
+	<button id="manual_drop">Manual drop</button>
+	<br><br>
+	
+	<label for="auto_drop">Auto drop:</label>
+	<select name="auto_drop" id="auto_drop" data-role="slider">
+		<option value="off">Off</option>
+		<option value="on">On</option>
+	</select> 
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Cabbage1</title>
+<title>Bottle Drop Extravaganza</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
@@ -12,6 +12,8 @@
 			$("#manual_drop").click(function() {
 	        	console.log("post: manual drop")
 				$.post('/api/manual_drop', function(response) {
+		        	console.log(response)
+					document.getElementById('drop_status').innerHTML = 'dropped '+response.distance.toFixed(2)+'m from target';
 			    }, 'json');
 			});
 			
@@ -37,6 +39,7 @@
     					contentType: "application/json",
 			    		success: function(result) {
 				        	console.log("put: auto drop on")
+//							document.getElementById('drop_status').innerHTML = 'dropped '+result.distance.toFixed(2)+'m from target';
 			        	},
 			        	dataType: "json"
 					});
@@ -55,7 +58,6 @@
 	</select> 
 	<br><br>
 
-	<label for="drop_status">Drop status: ???</label>
-
+	Drop status: <label id="drop_status">waiting...</label>
 </body>
 </html>

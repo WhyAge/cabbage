@@ -28,11 +28,67 @@ function auto_drop(req, res) {
 	console.log("auto_drop:", req.body.auto_mode)
 	autoDropMode = req.body.auto_mode
 
-	var autoModeTimerInterval = setInterval(autoModeTimer, 1000);
+	var x;			// x location of plane
+	var y;			// y location of plane
+	var dx;			// x distance from plane to target
+	var dy;			// y distance from plane to target
+	var d;			// distance from plane to target
+	var vx;			// x velocity of plane
+	var vy;			// y velocity of plane
+	var v;			// velocity of plane
+	var tx = 135	// x location of target
+	var ty = 100	// y location of target
+	var tick = 1;	// timer interval in seconds
+	var md = 0.5;	// mechanical delay
+	var ttt;		// time to target
+	var dropped = false; // true if the bottle was dropped;
+	
+	var autoModeTimerInterval = setInterval(autoModeTimer, tick * 1000);
 
 	function autoModeTimer() {
 		if(autoDropMode == "on") {
-			console.log("tick")
+//			console.log("tick")
+			var request = require('request');
+			var response;
+			request('http://128.253.51.87/plane/state', function(error, response, body) {
+				if (error != null) console.log('error:', error);
+				if (response && response.statusCode != 200) console.log('statusCode:', response && response.statusCode);
+				var parsedBody = JSON.parse(body);
+				
+				x = parsedBody.plane_location.x;
+				y = parsedBody.plane_location.y;
+
+				vx = parsedBody.plane_velocity.vx;
+				vy = parsedBody.plane_velocity.vy;
+
+				dx = tx - x;
+				dy = ty - y;
+				
+				d = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+				
+				v = Math.sqrt(Math.pow(vx,2) + Math.pow(vy,2));
+				
+				ttt = d / v;
+				
+				console.log("x,y:%d,%d  vx,vy:%d,%d  dx,dy:%d,%d  d:%d  v:%d  ttt:%d", x.toFixed(2), y.toFixed(2), vx.toFixed(2), vy.toFixed(2), dx.toFixed(2), dy.toFixed(2), d.toFixed(2), v.toFixed(2), ttt.toFixed(2));
+				
+				if(ttt <= tick + md) { // Time to drop!
+					if(!dropped) {
+						dropped = true;
+						console.log("Drop!")
+
+						request.post({url:'http://128.253.51.87/plane/release_bottle', formData: formData}, function optionalCallback(err, httpResponse, body) {
+							if (err) colsole.log('Bottle release failed:', err);
+							else {
+								colsole.log('Bottle dropped!');
+								var parsedBody = JSON.parse(body);
+								colsole.log(parsedBody);
+							}
+						}
+					}
+				}
+			});
+			
 		}
 		else clearInterval(autoModeTimerInterval);
 	}
@@ -44,35 +100,12 @@ app.get("/", homepage)
 
 
 
-function homepage(req, res) {
-	var request = require('request');
-	var response;
-
-	request('http://latte.sitarbucks.com/plane/state', function (error, response, body) {
-		if (error != null) console.log('error:', error); // Print the error if one occurred
-		if (response && response.statusCode != 200) console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-
-		var parsedBody = JSON.parse(body);
-		response = body + "<br>"
-		response += "<div style=\"color: red\">"
-		response += "x:" + parsedBody.plane_location.x + "<br>"
-		response += "y:" + parsedBody.plane_location.y + "<br>"
-		response += "</div>"
-		response += "<form action=\"\" method=\"post\"> <button name=\"drop\" value=\"drop\">Drop</button> </form>"
-		res.send(response);
-	});
-}
-
-//function sleep(ms) {
-//  return new Promise(resolve => setTimeout(resolve, ms));
-//}
-
 /*
 function homepage(req, res) {
 	var request = require('request');
 	var response;
 
-	request('http://latte.sitarbucks.com/plane/state', function (error, response, body) {
+	request('http://128.253.51.87/plane/state', function (error, response, body) {
 		if (error != null) console.log('error:', error); // Print the error if one occurred
 		if (response && response.statusCode != 200) console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
 
@@ -85,20 +118,6 @@ function homepage(req, res) {
 		response += "<form action=\"\" method=\"post\"> <button name=\"drop\" value=\"drop\">Drop</button> </form>"
 		res.send(response);
 	});
-}
-
-
-
-
-function postit(argument) {
-	request.post({url:'http://latte.sitarbucks.com/plane/release_bottle', formData: formData}, function optionalCallback(err, httpResponse, body) {
-  		if (err) {
-    		return console.error('upload failed:', err);
-  		}
-
-
-  		console.log('Upload successful!  Server responded with:', body);
-});
 }
 
 */

@@ -8,18 +8,20 @@
 
 	<script type="text/javascript">
 	    $(document).ready(function() {
-		    $("#manual_drop").click(function() {
+
+			$("#manual_drop").click(function() {
 	        	console.log("post: manual drop")
 				$.post('/api/manual_drop', function(response) {
 			    }, 'json');
 			});
+			
 			$('#auto_drop').change(function() {
 				console.log($(this).val())
 				if($(this).val() == "off") {
 					$.ajax({
 			    		url: '/api/auto_drop',
 			    		type: 'PUT',
-			    		data: '{"test":"TEST! off"}',
+			    		data: '{"auto\_mode":"off"}',
     					contentType: "application/json",
 			    		success: function(result) {
 				        	console.log("put: auto drop off")
@@ -31,7 +33,7 @@
 					$.ajax({
 			    		url: '/api/auto_drop',
 			    		type: 'PUT',
-			    		data: '{"test":"TEST on!"}',
+			    		data: '{"auto\_mode":"on"}',
     					contentType: "application/json",
 			    		success: function(result) {
 				        	console.log("put: auto drop on")
@@ -51,6 +53,9 @@
 		<option value="off">Off</option>
 		<option value="on">On</option>
 	</select> 
+	<br><br>
+
+	<label for="drop_status">Drop status: ???</label>
 
 </body>
 </html>

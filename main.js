@@ -1,5 +1,9 @@
 const express = require("express")
 const app = express()
+var bodyParser = require('body-parser');
+var auto_drop_mode = false;
+
+app.use(bodyParser.json())
 
 app.get("/api/airdrop_status", airdrop_status)
 
@@ -20,13 +24,18 @@ function airdrop_status(req, res) {
 
 function manual_drop(req, res) {
 	console.log("manual_drop")
-	res.send("manual_drop")
+	res.send({result:"success"})
 }
 
 function auto_drop(req, res) {
-	console.log("auto_drop")
-	res.send("auto_drop")
+//	console.log("auto_drop", req.route.methods.put)
+	console.log("auto_drop", req.body)
+//	auto_drop_mode = req. ???
+	res.send({result:"success"})
 }
+
+
+
 
 /*
 app.get("/", homepage)

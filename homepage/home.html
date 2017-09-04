@@ -6,33 +6,42 @@
 
 <body>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-
-    	var autoDropMode = false;
-
-	    $("#manual_drop").click(function() {
-        	console.log("post: manual drop")
-			$.post('/api/manual_drop', function(response) {
-		    }, 'json');
-		});
-
-/*
-		$.ajax({
-    		url: '/api/auto_drop',
-    		type: 'PUT',
-    		success: function(result) {
-	        	console.log("put: auto drop")
-        	}
-		});
-*/
-		$('#auto_drop').change(function() {
-			if($(this).val() == "Off") autoDropMode = false; else autoDropMode = true; ????? always Off
-			console.log(autoDropMode)
-		});
-
-    });     
-</script>
+	<script type="text/javascript">
+	    $(document).ready(function() {
+		    $("#manual_drop").click(function() {
+	        	console.log("post: manual drop")
+				$.post('/api/manual_drop', function(response) {
+			    }, 'json');
+			});
+			$('#auto_drop').change(function() {
+				console.log($(this).val())
+				if($(this).val() == "off") {
+					$.ajax({
+			    		url: '/api/auto_drop',
+			    		type: 'PUT',
+			    		data: '{"test":"TEST! off"}',
+    					contentType: "application/json",
+			    		success: function(result) {
+				        	console.log("put: auto drop off")
+			        	},
+			        	dataType: "json"
+					});
+				}
+				else {
+					$.ajax({
+			    		url: '/api/auto_drop',
+			    		type: 'PUT',
+			    		data: '{"test":"TEST on!"}',
+    					contentType: "application/json",
+			    		success: function(result) {
+				        	console.log("put: auto drop on")
+			        	},
+			        	dataType: "json"
+					});
+				};
+			});
+		});     
+	</script>
 
 	<button id="manual_drop">Manual drop</button>
 	<br><br>

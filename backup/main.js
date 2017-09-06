@@ -3,8 +3,7 @@ const app = express()
 
 var bodyParser = require('body-parser');
 var autoDropMode = "off";
-var bottleDropped = false;
-var distanceFromTarget = -1;
+var bottles = 1 // number of bottles to drop
 
 app.use(bodyParser.json())
 app.get("/api/airdrop_status", airdrop_status)
@@ -17,24 +16,23 @@ app.listen(80, function(){
 })
 
 function airdrop_status(req, res) {
-	console.log("airdrop_status called, distance from target = ", distanceFromTarget)
-	res.send({dropped:bottleDropped, distance:distanceFromTarget})
+	console.log("airdrop_status")
+	res.send("airdrop_status")
 }
 
 function manual_drop(req, res) {
 	console.log("manual_drop called")
 	var parsedBody;
-	if(!bottleDropped) {
-		bottleDropped = true;
+	if(bottles > 0) {
+		bottles--;
 		var request = require('request');
 		var response;
 		request.post('http://128.253.51.87/plane/release_bottle', function(error, response, body) {
 			if (error != null) console.log('Bottle release failed:', error);
 			if (response && response.statusCode != 200) console.log('statusCode:', response && response.statusCode);
 			parsedBody = JSON.parse(body);
-			distanceFromTarget = parsedBody.dist_from_target;
-			res.send({distance:distanceFromTarget});
-			console.log('Bottle dropped, distance from target', distanceFromTarget);
+			res.send({distance:parsedBody.dist_from_target})
+			console.log('Bottle dropped!');
 			console.log(parsedBody);
 		})
 	}
@@ -88,16 +86,15 @@ function auto_drop(req, res) {
 				console.log("x,y:%d,%d  vx,vy:%d,%d  dx,dy:%d,%d  d:%d  v:%d  ttt:%d", x.toFixed(2), y.toFixed(2), vx.toFixed(2), vy.toFixed(2), dx.toFixed(2), dy.toFixed(2), d.toFixed(2), v.toFixed(2), ttt.toFixed(2));
 				
 				if(ttt <= tick + md) { // Time to drop!
-					if(!bottleDropped) {
-						bottleDropped = true;
+					if(bottles > 0) {
+						bottles--;
 						console.log("Auto drop!")
 
 						request.post('http://128.253.51.87/plane/release_bottle', function(error, response, body) {
 							if (error != null) console.log('Bottle drop failed:', error);
 							if (response && response.statusCode != 200) console.log('statusCode:', response && response.statusCode);
 							var parsedBody = JSON.parse(body);
-							distanceFromTarget = parsedBody.dist_from_target;
-							console.log('Bottle dropped, distance from target', distanceFromTarget);
+							console.log('Bottle dropped!');
 							console.log(parsedBody);
 						})
 					}

@@ -1,0 +1,16 @@
+{
+  "name": "cabbage",
+  "version": "1.0.0",
+  "description": "Yet unknown",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node main.js"
+  },
+  "author": "Jay Harel",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "request": "^2.81.0"
+  }
+}

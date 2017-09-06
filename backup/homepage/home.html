@@ -8,11 +8,7 @@
 
 	<script type="text/javascript">
 	    $(document).ready(function() {
-			var autoMode = false;
-			var statusCheckTimer = setInterval(statusCheck, 1000);
-			var statusCheckTimer;
-			var bottleDropped = false;
-			
+
 			$("#manual_drop").click(function() {
 	        	console.log("post: manual drop")
 				$.post('/api/manual_drop', function(response) {
@@ -30,7 +26,6 @@
 			    		data: '{"auto\_mode":"off"}',
     					contentType: "application/json",
 			    		success: function(result) {
-							autoMode = false;
 				        	console.log("put: auto drop off")
 			        	},
 			        	dataType: "json"
@@ -43,25 +38,13 @@
 			    		data: '{"auto\_mode":"on"}',
     					contentType: "application/json",
 			    		success: function(result) {
-							autoMode = true;
-							statusCheckTimer = setInterval(statusCheck, 1000);
 				        	console.log("put: auto drop on")
+//							document.getElementById('drop_status').innerHTML = 'dropped '+result.distance.toFixed(2)+'m from target';
 			        	},
 			        	dataType: "json"
 					});
 				};
 			});
-			
-			function statusCheck() {
-				if(autoMode && !bottleDropped) {
-					$.get('/api/airdrop_status', function(response) {
-						console.log(response)
-						bottleDropped = response.dropped;
-						if(bottleDropped) document.getElementById('drop_status').innerHTML = 'dropped '+response.distance.toFixed(2)+'m from target';
-					}, "json" );
-				}
-				else clearInterval(statusCheckTimer);
-			}
 		});     
 	</script>
 
